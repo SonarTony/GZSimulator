@@ -45,18 +45,25 @@ function manageTeam(teamIndex) {
   renderPlayers(teamIndex);
 }
 
-// Render Players for a Team
+// Render Players
 function renderPlayers(teamIndex) {
   const team = teams[teamIndex];
   playerList.innerHTML = '';
   team.players.forEach((player, index) => {
     const li = document.createElement('li');
-    li.textContent = `${player.name} (${player.position}) - R: ${player.ratings.R}, P: ${player.ratings.P}, X: ${player.ratings.X}, OVR: ${player.overall}`;
+    li.textContent = `${player.name} (${player.position}) - Rating: ${player.positionRating}, R:${player.ratings.R}, P:${player.ratings.P}, X:${player.ratings.X}`;
 
+    // Add Edit Button
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.addEventListener('click', () => editPlayer(teamIndex, index));
+
+    // Add Delete Button
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Delete';
     deleteBtn.addEventListener('click', () => deletePlayer(teamIndex, index));
 
+    li.appendChild(editBtn);
     li.appendChild(deleteBtn);
     playerList.appendChild(li);
   });
@@ -64,7 +71,7 @@ function renderPlayers(teamIndex) {
   document.getElementById('add-player').onclick = () => addPlayerToTeam(teamIndex);
 }
 
-// Add Player to a Team
+// Add Player
 function addPlayerToTeam(teamIndex) {
   const team = teams[teamIndex];
 
@@ -74,6 +81,14 @@ function addPlayerToTeam(teamIndex) {
   const position = prompt('Enter player position (QB, RB, WR, OL, DL, LB, DB):');
   const validPositions = ['QB', 'RB', 'WR', 'OL', 'DL', 'LB', 'DB'];
   if (!validPositions.includes(position)) return alert('Invalid position!');
+
+  const isOffensive = ['QB', 'RB', 'WR', 'OL'].includes(position);
+  const validRatings = isOffensive ? ['O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7'] : ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7'];
+  const positionRating = prompt(`Enter position rating (${validRatings.join(', ')}):`);
+
+  if (!validRatings.includes(positionRating)) {
+    return alert(`Invalid rating! Choose from ${validRatings.join(', ')}`);
+  }
 
   const ratings = {
     R: parseInt(prompt('Enter R rating (0-3):'), 10),
@@ -89,18 +104,56 @@ function addPlayerToTeam(teamIndex) {
     return alert('Ratings must be numbers between 0 and 3.');
   }
 
-  const overall = parseInt(prompt('Enter overall rating (1-7):'), 10);
-  if (isNaN(overall) || overall < 1 || overall > 7) {
-    return alert('Overall rating must be between 1 and 7.');
-  }
-
   if (team.players.length < 14) {
-    team.players.push({ name, position, ratings, overall });
+    team.players.push({ name, position, positionRating, ratings });
     saveTeams();
     renderPlayers(teamIndex);
   } else {
     alert('Maximum 14 players allowed.');
   }
+}
+
+// Edit Player
+function editPlayer(teamIndex, playerIndex) {
+  const team = teams[teamIndex];
+  const player = team.players[playerIndex];
+
+  const name = prompt('Enter player name:', player.name);
+  if (!name) return alert('Player name is required!');
+
+  const position = prompt('Enter player position (QB, RB, WR, OL, DL, LB, DB):', player.position);
+  const validPositions = ['QB', 'RB', 'WR', 'OL', 'DL', 'LB', 'DB'];
+  if (!validPositions.includes(position)) return alert('Invalid position!');
+
+  const isOffensive = ['QB', 'RB', 'WR', 'OL'].includes(position);
+  const validRatings = isOffensive ? ['O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7'] : ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7'];
+  const positionRating = prompt(`Enter position rating (${validRatings.join(', ')}):`, player.positionRating);
+
+  if (!validRatings.includes(positionRating)) {
+    return alert(`Invalid rating! Choose from ${validRatings.join(', ')}`);
+  }
+
+  const ratings = {
+    R: parseInt(prompt('Enter R rating (0-3):', player.ratings.R), 10),
+    P: parseInt(prompt('Enter P rating (0-3):', player.ratings.P), 10),
+    X: parseInt(prompt('Enter X rating (0-3):', player.ratings.X), 10),
+  };
+
+  if (
+    isNaN(ratings.R) || ratings.R < 0 || ratings.R > 3 ||
+    isNaN(ratings.P) || ratings.P < 0 || ratings.P > 3 ||
+    isNaN(ratings.X) || ratings.X < 0 || ratings.X > 3
+  ) {
+    return alert('Ratings must be numbers between 0 and 3.');
+  }
+
+  player.name = name;
+  player.position = position;
+  player.positionRating = positionRating;
+  player.ratings = ratings;
+
+  saveTeams();
+  renderPlayers(teamIndex);
 }
 
 // Delete Player

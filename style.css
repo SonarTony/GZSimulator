@@ -1,5 +1,4 @@
-/* styles.css */
-/* styles.css */
+/* style.css */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -30,6 +29,7 @@ button {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  margin-left: 0.5rem;
 }
 
 button:hover {
