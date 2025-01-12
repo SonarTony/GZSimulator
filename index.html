@@ -1,16 +1,35 @@
+
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>replit</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Game Simulator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  Hello world
-  <script src="script.js"></script>
-</body>
+  <header>
+    <h1>Football Game Simulator</h1>
+  </header>
+  
+  <main>
+    <!-- Team Management Section -->
+    <section id="team-management">
+      <h2>Teams</h2>
+      <button id="create-team">+ Add Team</button>
+      <ul id="team-list"></ul>
+    </section>
 
+    <!-- Player Management Section -->
+    <section id="player-management" style="display:none;">
+      <h2>Team Roster</h2>
+      <h3 id="team-name"></h3>
+      <ul id="player-list"></ul>
+      <button id="add-player">+ Add Player</button>
+      <button id="back-to-teams">Back to Teams</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
 </html>
